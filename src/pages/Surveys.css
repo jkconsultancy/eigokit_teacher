@@ -1,0 +1,53 @@
+.surveys-page {
+  min-height: 100vh;
+  background: var(--background-color, #f5f5f5);
+  padding: 20px;
+}
+
+.surveys-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.add-form {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.add-form input,
+.add-form select {
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+}
+
+.questions-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.question-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.jp-text {
+  color: #666;
+  font-style: italic;
+  margin-top: 10px;
+}
+
+.question-type {
+  font-size: 12px;
+  color: #999;
+  margin-top: 10px;
+}
+
