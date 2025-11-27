@@ -66,6 +66,12 @@
   color: #9ca3af;
 }
 
+.form-group input.disabled-input {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
 .form-group small {
   margin-top: 5px;
   font-size: 12px;

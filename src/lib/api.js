@@ -63,9 +63,17 @@ export const teacherAPI = {
     return response.data;
   },
 
-  acceptInvitation: async (token, password, name) => {
+  getInvitationStatus: async (token) => {
+    const response = await api.get(`/api/auth/teacher/invitation-status?token=${encodeURIComponent(token)}`);
+    return response.data;
+  },
+
+  acceptInvitation: async (token, password, confirmPassword, name) => {
     const formData = new FormData();
     formData.append('password', password);
+    if (confirmPassword) {
+      formData.append('confirm_password', confirmPassword);
+    }
     if (name) {
       formData.append('name', name);
     }
@@ -138,6 +146,11 @@ export const teacherAPI = {
 
   getDashboard: async (teacherId) => {
     const response = await api.get(`/api/teachers/${teacherId}/dashboard`);
+    return response.data;
+  },
+
+  getSchools: async (teacherId) => {
+    const response = await api.get(`/api/teachers/${teacherId}/schools`);
     return response.data;
   },
 

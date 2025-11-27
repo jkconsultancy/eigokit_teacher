@@ -14,6 +14,8 @@ export default function AcceptInvitation() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [checkingToken, setCheckingToken] = useState(true);
+  const [invitationStatus, setInvitationStatus] = useState(null);
+  const [requiresRegistration, setRequiresRegistration] = useState(true);
 
   useEffect(() => {
     if (!token) {
@@ -22,10 +24,28 @@ export default function AcceptInvitation() {
       return;
     }
 
-    // Optionally validate token with backend before showing form
-    // For now, we'll just show the form and validate on submit
-    setCheckingToken(false);
-  }, [token]);
+    // Check invitation status to determine if user exists
+    const checkInvitationStatus = async () => {
+      try {
+        const status = await teacherAPI.getInvitationStatus(token);
+        setInvitationStatus(status);
+        setRequiresRegistration(status.requires_registration);
+        if (status.name) {
+          setName(status.name);
+        }
+      } catch (err) {
+        const errorMessage = err.response?.data?.detail || err.message || 'Invalid invitation token';
+        setError(errorMessage);
+        if (err.response?.status === 404 || err.response?.status === 400) {
+          setTimeout(() => navigate('/signin'), 3000);
+        }
+      } finally {
+        setCheckingToken(false);
+      }
+    };
+
+    checkInvitationStatus();
+  }, [token, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,19 +57,31 @@ export default function AcceptInvitation() {
       return;
     }
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
+    // Password confirmation only required for new registrations
+    if (requiresRegistration) {
+      if (password !== confirmPassword) {
+        setError('Passwords do not match');
+        return;
+      }
     }
 
     try {
       setLoading(true);
-      const response = await teacherAPI.acceptInvitation(token, password, name || undefined);
+      const response = await teacherAPI.acceptInvitation(
+        token, 
+        password, 
+        requiresRegistration ? confirmPassword : undefined, 
+        name || undefined
+      );
       
       if (response.access_token) {
         // Auto-login: Store token and redirect to dashboard
         localStorage.setItem('access_token', response.access_token);
-        if (response.user_id) {
+        // Prefer the teacher table ID if provided
+        if (response.teacher_id) {
+          localStorage.setItem('teacherId', response.teacher_id);
+        } else if (response.user_id) {
+          // Fallback to user_id for older backend responses
           localStorage.setItem('teacherId', response.user_id);
         }
         
@@ -108,57 +140,86 @@ export default function AcceptInvitation() {
     <div className="accept-invitation-page">
       <div className="accept-invitation-container">
         <h1>Accept Teacher Invitation</h1>
-        <p className="subtitle">Set up your account to get started</p>
+        {invitationStatus && (
+          <p className="subtitle">
+            {requiresRegistration 
+              ? 'Create your account to get started' 
+              : 'Sign in to accept this invitation'}
+          </p>
+        )}
 
         {error && <div className="error-message">{error}</div>}
 
-        <form onSubmit={handleSubmit} className="accept-invitation-form">
-          <div className="form-group">
-            <label htmlFor="name">Name (Optional)</label>
-            <input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Your name"
-            />
-            <small>You can update your name later in settings</small>
+        {invitationStatus && (
+          <form onSubmit={handleSubmit} className="accept-invitation-form">
+            {invitationStatus.email && (
+              <div className="form-group">
+                <label>Email</label>
+                <input
+                  type="email"
+                  value={invitationStatus.email}
+                  disabled
+                  className="disabled-input"
+                />
+                <small>This is the email address associated with your invitation</small>
+              </div>
+            )}
+
+            {requiresRegistration && (
+              <div className="form-group">
+                <label htmlFor="name">Name (Optional)</label>
+                <input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Your name"
+                />
+                <small>You can update your name later in settings</small>
+              </div>
+            )}
+
+            <div className="form-group">
+              <label htmlFor="password">Password *</label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+                placeholder={requiresRegistration ? "At least 6 characters" : "Enter your password"}
+              />
+            </div>
+
+            {requiresRegistration && (
+              <div className="form-group">
+                <label htmlFor="confirmPassword">Confirm Password *</label>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  placeholder="Re-enter your password"
+                />
+              </div>
+            )}
+
+            <button type="submit" className="submit-button" disabled={loading}>
+              {loading 
+                ? (requiresRegistration ? 'Creating Account...' : 'Signing In...') 
+                : (requiresRegistration ? 'Create Account & Accept Invitation' : 'Sign In & Accept Invitation')}
+            </button>
+          </form>
+        )}
+
+        {!requiresRegistration && (
+          <div className="signin-link">
+            <p>Don't have an account? The form above will create one for you.</p>
           </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Password *</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              placeholder="At least 6 characters"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password *</label>
-            <input
-              id="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              minLength={6}
-              placeholder="Re-enter your password"
-            />
-          </div>
-
-          <button type="submit" className="submit-button" disabled={loading}>
-            {loading ? 'Accepting Invitation...' : 'Accept Invitation & Sign In'}
-          </button>
-        </form>
-
-        <div className="signin-link">
-          <p>Already have an account? <a href="/signin">Sign in</a></p>
-        </div>
+        )}
       </div>
     </div>
   );

@@ -18,7 +18,13 @@ export default function SignIn() {
 
     try {
       const result = await teacherAPI.signIn(email, password);
-      localStorage.setItem('teacherId', result.user?.id || '');
+      // Store the teacher table ID (used by backend FKs), not the auth user ID
+      if (result.teacher_id) {
+        localStorage.setItem('teacherId', result.teacher_id);
+      } else if (result.user?.id) {
+        // Fallback for older backend responses, though new backend always includes teacher_id
+        localStorage.setItem('teacherId', result.user.id);
+      }
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.detail || 'Sign in failed. Please check your credentials.');
