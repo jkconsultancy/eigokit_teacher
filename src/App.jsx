@@ -7,6 +7,7 @@ import Students from './pages/Students';
 import StudentDetail from './pages/StudentDetail';
 import Content from './pages/Content';
 import Surveys from './pages/Surveys';
+import SurveyDetail from './pages/SurveyDetail';
 import Classes from './pages/Classes';
 import ResetPassword from './pages/ResetPassword';
 import { loadTheme } from './lib/theme';
@@ -30,6 +31,7 @@ function App() {
         <Route path="/students/:studentId" element={<StudentDetail />} />
         <Route path="/content" element={<Content />} />
         <Route path="/surveys" element={<Surveys />} />
+        <Route path="/surveys/:questionId" element={<SurveyDetail />} />
         <Route path="/" element={<Navigate to="/signin" replace />} />
       </Routes>
     </Router>

@@ -1,0 +1,160 @@
+.survey-detail-page {
+  min-height: 100vh;
+  background: var(--background-color, #f5f5f5);
+  padding: 20px;
+}
+
+.survey-detail-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.question-info-card {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.question-info-card h2 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.question-jp {
+  color: #666;
+  font-style: italic;
+  margin: 10px 0;
+}
+
+.question-meta {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+  align-items: center;
+}
+
+.question-type {
+  font-size: 14px;
+  color: #666;
+  padding: 6px 12px;
+  background: #f0f0f0;
+  border-radius: 6px;
+}
+
+.response-count-badge {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  background: var(--primary-color, #3B82F6);
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+.responses-section {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.responses-section h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+}
+
+.no-responses {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+  font-size: 18px;
+}
+
+.responses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.response-card {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.response-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.response-header h4 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.response-date {
+  font-size: 12px;
+  color: #999;
+}
+
+.response-content {
+  margin: 10px 0;
+}
+
+.emoji-response {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.emoji-large {
+  font-size: 36px;
+}
+
+.response-value {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+}
+
+.text-response {
+  font-size: 16px;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+  padding: 12px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.lesson-id {
+  font-size: 12px;
+  color: #999;
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+}
+
+.error {
+  color: #dc3545;
+}
+

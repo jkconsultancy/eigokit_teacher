@@ -150,6 +150,11 @@ export const teacherAPI = {
     return response.data;
   },
 
+  getSurveyQuestionDetail: async (questionId) => {
+    const response = await api.get(`/api/teachers/survey-questions/${questionId}`);
+    return response.data;
+  },
+
   getDashboard: async (teacherId) => {
     const response = await api.get(`/api/teachers/${teacherId}/dashboard`);
     return response.data;
