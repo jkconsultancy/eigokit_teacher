@@ -139,6 +139,11 @@ export const teacherAPI = {
     return response.data;
   },
 
+  updateGrammar: async (teacherId, grammarId, grammar) => {
+    const response = await api.put(`/api/teachers/${teacherId}/grammar/${grammarId}`, grammar);
+    return response.data;
+  },
+
   createSurveyQuestion: async (teacherId, question) => {
     const response = await api.post(`/api/teachers/${teacherId}/survey-questions`, question);
     return response.data;
