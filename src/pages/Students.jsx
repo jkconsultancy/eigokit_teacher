@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { teacherAPI } from '../lib/api';
 import './Students.css';
 
@@ -9,7 +9,9 @@ export default function Students() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newStudentName, setNewStudentName] = useState('');
   const [newStudentClassId, setNewStudentClassId] = useState('');
+  const [viewMode, setViewMode] = useState('card'); // 'card' or 'list'
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const teacherId = localStorage.getItem('teacherId');
 
   useEffect(() => {
@@ -52,7 +54,9 @@ export default function Students() {
       setShowAddForm(false);
       loadStudents();
     } catch (error) {
-      alert('Failed to add student');
+      const errorMessage = error?.response?.data?.detail || error?.message || 'Failed to add student';
+      console.error('Failed to add student:', error);
+      alert(`Failed to add student: ${errorMessage}`);
     }
   };
 
@@ -89,9 +93,26 @@ export default function Students() {
           <Link to="/dashboard">← Back to Dashboard</Link>
         </div>
 
-        <button onClick={() => setShowAddForm(!showAddForm)} className="add-button">
-          {showAddForm ? 'Cancel' : '+ Add Student'}
-        </button>
+        <div className="page-controls">
+          <button onClick={() => setShowAddForm(!showAddForm)} className="add-button">
+            {showAddForm ? 'Cancel' : '+ Add Student'}
+          </button>
+          
+          <div className="view-toggle">
+            <button
+              className={viewMode === 'card' ? 'active' : ''}
+              onClick={() => setViewMode('card')}
+            >
+              Card View
+            </button>
+            <button
+              className={viewMode === 'list' ? 'active' : ''}
+              onClick={() => setViewMode('list')}
+            >
+              List View
+            </button>
+          </div>
+        </div>
 
         {showAddForm && (
           <form onSubmit={handleAddStudent} className="add-student-form">
@@ -113,21 +134,57 @@ export default function Students() {
           </form>
         )}
 
-        <div className="students-list">
-          {students.map((student) => (
-            <div key={student.id} className="student-card">
-              <h3>{student.name}</h3>
-              <p>Class ID: {student.class_id}</p>
-              <p>Status: {student.registration_status || 'pending'}</p>
-              <div className="student-actions">
-                <button onClick={() => handleResetAuth(student.id)}>Reset Auth</button>
-                <button onClick={() => handleDeleteStudent(student.id)} className="delete-button">
-                  Delete
-                </button>
+        {viewMode === 'card' ? (
+          <div className="students-grid">
+            {students.map((student) => (
+              <div
+                key={student.id}
+                className="student-card clickable"
+                onClick={() => navigate(`/students/${student.id}`)}
+              >
+                <h3>{student.name}</h3>
+                <p>Class ID: {student.class_id}</p>
+                <p>Status: {student.registration_status || 'pending'}</p>
+                <div className="student-actions" onClick={(e) => e.stopPropagation()}>
+                  <button onClick={() => handleResetAuth(student.id)}>Reset Auth</button>
+                  <button onClick={() => handleDeleteStudent(student.id)} className="delete-button">
+                    Delete
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <table className="students-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Class ID</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {students.map((student) => (
+                <tr
+                  key={student.id}
+                  className="clickable-row"
+                  onClick={() => navigate(`/students/${student.id}`)}
+                >
+                  <td>{student.name}</td>
+                  <td>{student.class_id}</td>
+                  <td>{student.registration_status || 'pending'}</td>
+                  <td onClick={(e) => e.stopPropagation()}>
+                    <button onClick={() => handleResetAuth(student.id)}>Reset Auth</button>
+                    <button onClick={() => handleDeleteStudent(student.id)} className="delete-button">
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

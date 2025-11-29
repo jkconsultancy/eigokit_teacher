@@ -88,9 +88,10 @@ export const teacherAPI = {
   },
 
   addStudent: async (teacherId, name, classId) => {
-    const response = await api.post(`/api/teachers/${teacherId}/students`, null, {
-      params: { name, class_id: classId },
-    });
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('class_id', classId);
+    const response = await api.post(`/api/teachers/${teacherId}/students`, formData);
     return response.data;
   },
 
@@ -108,6 +109,11 @@ export const teacherAPI = {
 
   resetStudentAuth: async (teacherId, studentId) => {
     const response = await api.post(`/api/teachers/${teacherId}/reset-auth/${studentId}`);
+    return response.data;
+  },
+
+  getStudentDetail: async (studentId) => {
+    const response = await api.get(`/api/teachers/students/${studentId}`);
     return response.data;
   },
 

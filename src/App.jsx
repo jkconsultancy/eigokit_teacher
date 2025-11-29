@@ -4,6 +4,7 @@ import SignIn from './pages/SignIn';
 import AcceptInvitation from './pages/AcceptInvitation';
 import Dashboard from './pages/Dashboard';
 import Students from './pages/Students';
+import StudentDetail from './pages/StudentDetail';
 import Content from './pages/Content';
 import Surveys from './pages/Surveys';
 import Classes from './pages/Classes';
@@ -26,6 +27,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/classes" element={<Classes />} />
         <Route path="/students" element={<Students />} />
+        <Route path="/students/:studentId" element={<StudentDetail />} />
         <Route path="/content" element={<Content />} />
         <Route path="/surveys" element={<Surveys />} />
         <Route path="/" element={<Navigate to="/signin" replace />} />
