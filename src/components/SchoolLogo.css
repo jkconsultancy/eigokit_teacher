@@ -1,0 +1,13 @@
+.school-logo {
+  max-height: 40px;
+  max-width: 200px;
+  object-fit: contain;
+  display: block;
+}
+
+.school-logo-text {
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: var(--primary-color, #3B82F6);
+}
+

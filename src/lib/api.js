@@ -47,6 +47,16 @@ export const teacherAPI = {
     }
     return response.data;
   },
+  // Get user roles (supports multi-role system)
+  getUserRoles: async () => {
+    const response = await api.get('/api/auth/user-roles');
+    return response.data;
+  },
+  // Get teacher roles for current user (across all schools)
+  getTeacherRoles: async () => {
+    const response = await api.get('/api/auth/teacher/roles');
+    return response.data;
+  },
 
   signUp: async (email, password, name, schoolId) => {
     const response = await api.post('/api/auth/teacher/signup', null, {
