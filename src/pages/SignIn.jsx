@@ -15,6 +15,7 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
     try {
       const result = await teacherAPI.signIn(email, password);
@@ -25,6 +26,12 @@ export default function SignIn() {
         // Fallback for older backend responses, though new backend always includes teacher_id
         localStorage.setItem('teacherId', result.user.id);
       }
+      
+      // Multi-role support: Store roles if provided
+      if (result.roles) {
+        localStorage.setItem('user_roles', JSON.stringify(result.roles));
+      }
+      
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.detail || 'Sign in failed. Please check your credentials.');

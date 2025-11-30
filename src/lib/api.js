@@ -47,6 +47,16 @@ export const teacherAPI = {
     }
     return response.data;
   },
+  // Get user roles (supports multi-role system)
+  getUserRoles: async () => {
+    const response = await api.get('/api/auth/user-roles');
+    return response.data;
+  },
+  // Get teacher roles for current user (across all schools)
+  getTeacherRoles: async () => {
+    const response = await api.get('/api/auth/teacher/roles');
+    return response.data;
+  },
 
   signUp: async (email, password, name, schoolId) => {
     const response = await api.post('/api/auth/teacher/signup', null, {
@@ -139,6 +149,11 @@ export const teacherAPI = {
     return response.data;
   },
 
+  updateGrammar: async (teacherId, grammarId, grammar) => {
+    const response = await api.put(`/api/teachers/${teacherId}/grammar/${grammarId}`, grammar);
+    return response.data;
+  },
+
   createSurveyQuestion: async (teacherId, question) => {
     const response = await api.post(`/api/teachers/${teacherId}/survey-questions`, question);
     return response.data;
@@ -147,6 +162,11 @@ export const teacherAPI = {
   getSurveyQuestions: async (teacherId, classId = null) => {
     const params = classId ? { class_id: classId } : {};
     const response = await api.get(`/api/teachers/${teacherId}/survey-questions`, { params });
+    return response.data;
+  },
+
+  getSurveyQuestionDetail: async (questionId) => {
+    const response = await api.get(`/api/teachers/survey-questions/${questionId}`);
     return response.data;
   },
 

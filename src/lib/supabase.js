@@ -5,3 +5,4 @@ export const supabase = createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_KEY);
 
 
 
+
